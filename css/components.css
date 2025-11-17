@@ -42,3 +42,8 @@ li {
     justify-content: space-between;
     align-items: center;
 }
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
