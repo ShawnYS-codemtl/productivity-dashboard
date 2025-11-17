@@ -39,11 +39,80 @@ li {
     border-radius: 6px;
     margin-bottom: 6px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
+    transition: all 0.2s;
 }
 
 .completed {
     text-decoration: line-through;
     opacity: 0.6;
 }
+
+.filter-btn.active {
+    background-color: #007bff;
+    color: white;
+}
+
+#todo-app {
+    margin-bottom: 1rem;
+}
+
+/* Todo list container */
+#todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+}
+
+/* Each todo item */
+#todo-list li {
+    display: flex;
+    align-items: flex-start; /* aligns checkbox and number at top of multi-line text */
+    gap: 0.5rem;             /* space between number, checkbox, text, delete button */
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Number span */
+#todo-list li .number {
+    width: 2ch;        /* fixed width for numbers */
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* Checkbox */
+#todo-list li input[type="checkbox"] {
+    margin-top: 0.2rem; /* adjust vertical alignment */
+    flex-shrink: 0;
+}
+
+/* Text wrapper for multi-line todos */
+.todo-text-wrapper {
+    flex: 1;                  /* take remaining space */
+    word-break: break-word;    /* wrap long text */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Text span inside wrapper */
+.todo-text-wrapper span {
+    display: block;
+}
+
+/* Delete button */
+#todo-list li button.delete-btn {
+    margin-left: 0.5rem;
+    background: #c70000;
+    border: none;
+    cursor: pointer;
+    color: white;
+    flex-shrink: 0;
+}
+
+/* Completed todos */
+#todo-list li.completed span {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+

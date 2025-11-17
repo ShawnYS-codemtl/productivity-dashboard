@@ -24,3 +24,7 @@ header {
 h2 {
     margin-bottom: 1rem;
 }
+
+.dragging {
+    opacity: 0.5;
+}
