@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Productivity Dashboard</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link rel="stylesheet" href="./css/components.css" />
+</head>
+<body>
+    <header>
+        <h1>Productivity Dashboard</h1>
+    </header>
+
+    <main class="grid">
+        <!-- To-Do Widget -->
+        <section class="card" id="todo-section">
+            <h2>To-Do List</h2>
+            <div id="todo-app">
+                <input type="text" id="todo-input" placeholder="Add a task..." />
+                <button id="todo-add-btn">Add</button>
+
+                <ul id="todo-list"></ul>
+            </div>
+        </section>
+
+        <!-- Pomodoro Widget -->
+        <section class="card" id="pomodoro-section">
+            <h2>Pomodoro Timer</h2>
+
+            <div id="pomodoro-app">
+                <div id="timer-display">25:00</div>
+
+                <div class="pomodoro-controls">
+                    <button id="start-btn">Start</button>
+                    <button id="pause-btn">Pause</button>
+                    <button id="reset-btn">Reset</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Habit Tracker -->
+        <section class="card" id="habits-section">
+            <h2>Habit Tracker</h2>
+
+            <div id="habits-app">
+                <input type="text" id="habit-input" placeholder="New habit..." />
+                <button id="habit-add-btn">Add</button>
+
+                <ul id="habit-list"></ul>
+
+                <div id="habit-calendar"></div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>
