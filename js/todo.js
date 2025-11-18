@@ -23,7 +23,7 @@ export function init() {
         if (!text) return
 
         todos.push({ text, completed: false })
-        save()
+        save("todos", todos)
         render()
         input.value = ""
     }

@@ -90,18 +90,26 @@
         </section>
 
         <!-- Habit Tracker -->
-        <section class="card" id="habits-section">
+        <section class="card" id="habit-section">
             <h2>Habit Tracker</h2>
 
-            <div id="habits-app">
-                <input type="text" id="habit-input" placeholder="New habit..." />
-                <button id="habit-add-btn">Add</button>
+            <div id="habit-app">
+
+                <form id="habit-form">
+                    <input 
+                        id="habit-input"
+                        type="text" 
+                        placeholder="Add a new habit..."
+                        maxlength="40"
+                    />
+                    <button type="submit">Add</button>
+                </form>
 
                 <ul id="habit-list"></ul>
 
-                <div id="habit-calendar"></div>
             </div>
         </section>
+
     </main>
 
     <script type="module" src="./js/main.js"></script>
