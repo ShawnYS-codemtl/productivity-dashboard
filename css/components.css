@@ -20,6 +20,16 @@ button:hover {
     color: #555;
 }
 
+button input {
+    font-size: 1rem;
+    width: 50px;
+    padding: 2px 4px;
+    margin: 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
 button:disabled {
     opacity: 0.4;
     cursor: not-allowed;

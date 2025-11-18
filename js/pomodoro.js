@@ -1,38 +1,44 @@
-let intervalId = null;
+let intervalId = null
 let duration = 1500
 let timeLeft = duration // 25 min
 
-const display = document.getElementById("timer-display");
-const startBtn = document.getElementById("start-btn");
-const pauseBtn = document.getElementById("pause-btn");
-const resetBtn = document.getElementById("reset-btn");
+const alertSound = new Audio("../assets/sounds/bell-ring-390294.mp3")
+
+const display = document.getElementById("timer-display")
+const startBtn = document.getElementById("start-btn")
+const pauseBtn = document.getElementById("pause-btn")
+const resetBtn = document.getElementById("reset-btn")
 const ring = document.getElementById('ring')
-let ringRadius = null;
-let ringCircumference = null;
+let ringRadius = null
+let ringCircumference = null
 
 // Mode buttons (Pomodoro, Short break, Long break)
-const modeBtns = document.querySelectorAll("[data-min]");
+const modeBtns = document.querySelectorAll("[data-min]")
 
 export function init() {
-    console.log("Pomodoro Module Loaded");
+    console.log("Pomodoro Module Loaded")
 
     updateDisplay()
     initProgressRing()
     updateControls()
     highlightActiveButton(25)
 
-    startBtn.addEventListener("click", start);
+    startBtn.addEventListener("click", start)
 
-    pauseBtn.addEventListener("click", pause);
+    pauseBtn.addEventListener("click", pause)
 
-    resetBtn.addEventListener("click", reset);
+    resetBtn.addEventListener("click", reset)
 
     modeBtns.forEach(btn => {
         btn.addEventListener("click", () => {
-            const mins = Number(btn.dataset.min);
-            setMode(mins);
-        });
-    });
+            const mins = Number(btn.dataset.min)
+            setMode(mins)
+        })
+
+        btn.addEventListener("dblclick", () => {
+            setTimeout(() => editModeDurationInline(btn), 0)
+        })
+    })
 }
 
 function start(){
@@ -44,8 +50,9 @@ function start(){
             clearInterval(intervalId)
             intervalId = null
             timeLeft = 0
+            alertSound.play()
         }
-        updateProgressRing();
+        updateProgressRing()
         updateDisplay()
         if (!intervalId) updateControls()
     }, 1000)
@@ -56,7 +63,7 @@ function start(){
 function pause(){
     clearInterval(intervalId)
     intervalId = null
-    updateProgressRing();
+    updateProgressRing()
     updateControls()
 }
 
@@ -68,7 +75,7 @@ function reset() {
 }
 
 function updateDisplay() {
-    display.textContent = formatTime(timeLeft);
+    display.textContent = formatTime(timeLeft)
 }
 
 function updateControls() {
@@ -96,7 +103,7 @@ function setMode(mins) {
     timeLeft = duration
     pause()
     updateDisplay()
-    updateProgressRing();
+    updateProgressRing()
     highlightActiveButton(mins)
 
     let mode = "Pomodoro"
@@ -110,44 +117,85 @@ function setMode(mins) {
 
 function highlightActiveButton(mins) {
     modeBtns.forEach(btn => {
-        const btnMinutes = Number(btn.dataset.min);
+        const btnMinutes = Number(btn.dataset.min)
         if (btnMinutes === mins) {
-            btn.classList.add("active");
+            btn.classList.add("active")
         } else {
-            btn.classList.remove("active");
+            btn.classList.remove("active")
         }
-    });
+    })
 }
 
 function initProgressRing() {
     if (!ring) return
 
     const r = Number(ring.getAttribute("r"))
-    ringRadius = r;
-    ringCircumference = 2 * Math.PI * ringRadius;
+    ringRadius = r
+    ringCircumference = 2 * Math.PI * ringRadius
     // prepare the circle for animation
-    ring.style.strokeDasharray = `${ringCircumference} ${ringCircumference}`;
-    ring.style.strokeDashoffset = `${ringCircumference}`; // full (0% visible)
+    ring.style.strokeDasharray = `${ringCircumference} ${ringCircumference}`
+    ring.style.strokeDashoffset = `${ringCircumference}` // full (0% visible)
     // set initial color / state
-    updateProgressRing();
+    updateProgressRing()
 }
 
 function updateProgressRing() {
-    if (!ring || !ringCircumference) return;
+    if (!ring || !ringCircumference) return
 
     // guard: avoid division by zero
-    const total = Math.max(duration, 1);
-    const progress = Math.max(0, Math.min(1, (total - timeLeft) / total)); // 0 → 1
-    const offset = ringCircumference * (1 - progress); // stroke-dashoffset decreases as we progress
-    ring.style.strokeDashoffset = String(offset);
+    const total = Math.max(duration, 1)
+    const progress = Math.max(0, Math.min(1, (total - timeLeft) / total)) // 0 → 1
+    const offset = ringCircumference * (1 - progress) // stroke-dashoffset decreases as we progress
+    ring.style.strokeDashoffset = String(offset)
 }
 
 function setRingColor(mode){
     if (mode === 'Pomodoro'){
-        ring.style.stroke = "url(#grad-pomodoro)";
+        ring.style.stroke = "url(#grad-pomodoro)"
     } else if (mode === "short") {
-        ring.style.stroke = "url(#grad-short)";
+        ring.style.stroke = "url(#grad-short)"
     } else if (mode === "long") {
-        ring.style.stroke = "url(#grad-long)";
+        ring.style.stroke = "url(#grad-long)"
     }
 }
+
+function editModeDurationInline(btn) {
+    const oldText = btn.textContent
+    const input = document.createElement("input")
+    input.type = "number"
+    input.min = "1"
+    input.max = "180"
+    input.value = btn.dataset.min
+    input.style.width = "50px"
+    btn.textContent = ""
+    btn.appendChild(input)
+    input.focus()
+    input.select()
+
+    input.addEventListener("keypress", e => {
+        if (e.key === "Enter") {
+            let val = Number(input.value)
+            if (!isNaN(val) && val > 0 && val <= 180) {
+                btn.dataset.min = val
+                btn.textContent = oldText
+                // Update active timer if applicable
+                const activeBtn = document.querySelector(".active")
+                if (activeBtn === btn) {
+                    duration = val * 60
+                    timeLeft = duration
+                    pause()
+                    updateDisplay()
+                    updateProgressRing()
+                    updateControls()
+                }
+            }
+        }
+    })
+
+    input.addEventListener("blur", () => {
+        btn.textContent = oldText
+    })
+}
+
+
+
