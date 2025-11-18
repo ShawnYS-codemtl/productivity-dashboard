@@ -7,13 +7,15 @@ const startBtn = document.getElementById("start-btn");
 const pauseBtn = document.getElementById("pause-btn");
 const resetBtn = document.getElementById("reset-btn");
 
+// Mode buttons (Pomodoro, Short break, Long break)
+const modeBtns = document.querySelectorAll("[data-min]");
+
 export function init() {
     console.log("Pomodoro Module Loaded");
 
-    // Mode buttons (Pomodoro, Short break, Long break)
-    const modeBtns = document.querySelectorAll("[data-min]");
-
     updateDisplay()
+    updateControls()
+    highlightActiveButton(25)
 
     startBtn.addEventListener("click", start);
 
@@ -39,21 +41,33 @@ function start(){
         }
         updateDisplay()
     }, 1000)
+
+    updateControls()
 }
 
 function pause(){
     clearInterval(intervalId)
     intervalId = null
+    updateControls()
 }
 
 function reset() {
     timeLeft = duration
     pause()
     updateDisplay()
+    updateControls()
 }
 
 function updateDisplay() {
     display.textContent = formatTime(timeLeft);
+}
+
+function updateControls() {
+    const running = intervalId != null
+
+    startBtn.disabled = running
+    pauseBtn.disabled = !running
+    resetBtn.disabled = false
 }
 
 function formatTime(totalSeconds) {
@@ -73,4 +87,17 @@ function setMode(mins) {
     timeLeft = duration
     pause()
     updateDisplay()
+    updateControls()
+    highlightActiveButton(mins)
+}
+
+function highlightActiveButton(mins) {
+    modeBtns.forEach(btn => {
+        const btnMinutes = Number(btn.dataset.min);
+        if (btnMinutes === mins) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
 }

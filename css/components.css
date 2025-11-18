@@ -17,6 +17,12 @@ button {
 
 button:hover {
     opacity: 0.9;
+    color: #555;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 /* Pomodoro timer */
@@ -25,6 +31,21 @@ button:hover {
     font-weight: bold;
     text-align: center;
     margin-bottom: 1rem;
+}
+
+[data-min] {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    background: #f4f4f4;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #555;
+}
+
+[data-min].active {
+    background: #ff5252;
+    color: white;
+    border-color: #ff5252;
 }
 
 /* Lists */
