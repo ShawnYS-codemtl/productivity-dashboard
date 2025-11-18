@@ -27,10 +27,9 @@ button:disabled {
 
 /* Pomodoro timer */
 #timer-display {
-    font-size: 2.8rem;
+    font-size: 1.6rem;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 1rem;
 }
 
 [data-min] {
@@ -47,6 +46,44 @@ button:disabled {
     color: white;
     border-color: #ff5252;
 }
+
+.progress-ring-wrap { 
+    width: 140px; 
+    height: 140px; 
+    margin: 0 auto; 
+    position: relative; 
+}
+
+.progress-ring { 
+    display: block;
+ }
+
+.ring-bg { 
+    transition: stroke 0.3s ease;
+ }
+
+.ring {
+  transition: stroke-dashoffset 0.9s linear, stroke 0.3s linear;
+  transform-origin: 50% 50%;
+}
+
+/* center text inside the svg foreignObject */
+.ring-center { 
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100%; 
+    font-size:1.6rem; 
+    font-weight:700; 
+}
+
+.timer-controls, .timer-options {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1em;
+}
+
 
 /* Lists */
 ul {

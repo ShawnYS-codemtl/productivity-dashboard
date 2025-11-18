@@ -6,6 +6,9 @@ const display = document.getElementById("timer-display");
 const startBtn = document.getElementById("start-btn");
 const pauseBtn = document.getElementById("pause-btn");
 const resetBtn = document.getElementById("reset-btn");
+const ring = document.getElementById('ring')
+let ringRadius = null;
+let ringCircumference = null;
 
 // Mode buttons (Pomodoro, Short break, Long break)
 const modeBtns = document.querySelectorAll("[data-min]");
@@ -14,6 +17,7 @@ export function init() {
     console.log("Pomodoro Module Loaded");
 
     updateDisplay()
+    initProgressRing()
     updateControls()
     highlightActiveButton(25)
 
@@ -36,10 +40,14 @@ function start(){
 
     intervalId = setInterval(() => {
         timeLeft -= 1
-        if (timeLeft === 0){
+        if (timeLeft <= 0){
             clearInterval(intervalId)
+            intervalId = null
+            timeLeft = 0
         }
+        updateProgressRing();
         updateDisplay()
+        if (!intervalId) updateControls()
     }, 1000)
 
     updateControls()
@@ -48,6 +56,7 @@ function start(){
 function pause(){
     clearInterval(intervalId)
     intervalId = null
+    updateProgressRing();
     updateControls()
 }
 
@@ -87,8 +96,16 @@ function setMode(mins) {
     timeLeft = duration
     pause()
     updateDisplay()
-    updateControls()
+    updateProgressRing();
     highlightActiveButton(mins)
+
+    let mode = "Pomodoro"
+    if (mins === 5) mode = 'short'
+    if (mins === 15) mode = 'long'
+
+    setRingColor(mode)
+    updateControls()
+
 }
 
 function highlightActiveButton(mins) {
@@ -100,4 +117,37 @@ function highlightActiveButton(mins) {
             btn.classList.remove("active");
         }
     });
+}
+
+function initProgressRing() {
+    if (!ring) return
+
+    const r = Number(ring.getAttribute("r"))
+    ringRadius = r;
+    ringCircumference = 2 * Math.PI * ringRadius;
+    // prepare the circle for animation
+    ring.style.strokeDasharray = `${ringCircumference} ${ringCircumference}`;
+    ring.style.strokeDashoffset = `${ringCircumference}`; // full (0% visible)
+    // set initial color / state
+    updateProgressRing();
+}
+
+function updateProgressRing() {
+    if (!ring || !ringCircumference) return;
+
+    // guard: avoid division by zero
+    const total = Math.max(duration, 1);
+    const progress = Math.max(0, Math.min(1, (total - timeLeft) / total)); // 0 → 1
+    const offset = ringCircumference * (1 - progress); // stroke-dashoffset decreases as we progress
+    ring.style.strokeDashoffset = String(offset);
+}
+
+function setRingColor(mode){
+    if (mode === 'Pomodoro'){
+        ring.style.stroke = "url(#grad-pomodoro)";
+    } else if (mode === "short") {
+        ring.style.stroke = "url(#grad-short)";
+    } else if (mode === "long") {
+        ring.style.stroke = "url(#grad-long)";
+    }
 }
