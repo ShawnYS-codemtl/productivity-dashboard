@@ -93,7 +93,7 @@ function render(){
 
         const streakSpan = document.createElement('span');
         streakSpan.classList.add('habit-streak');
-        streakSpan.textContent = `🔥 ${habit.currentStreak} • ⭐ ${habit.bestStreak}`;
+        streakSpan.textContent = `🔥 ${habit.currentStreak}`;
 
         leftDiv.append(check, nameSpan, streakSpan)
 

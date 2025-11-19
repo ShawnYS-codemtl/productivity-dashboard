@@ -241,3 +241,35 @@ li {
     font-size: 1.1rem;
     cursor: pointer;
 }
+
+#calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-top: 1rem;
+}
+
+#calendar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5em;
+}
+
+#calendar-grid .weekday {
+    font-weight: bold;
+    text-align: center;
+}
+
+#calendar-grid .day,
+#calendar-grid .pad {
+    padding: 8px;
+    text-align: center;
+    background: #f7f7f7;
+    border-radius: 6px;
+}
+
+#calendar-grid .day.today {
+    background: #6ab7ff;
+    color: white;
+    font-weight: bold;
+}
