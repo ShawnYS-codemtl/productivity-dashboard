@@ -273,3 +273,90 @@ li {
     color: white;
     font-weight: bold;
 }
+
+/* Event Form Section */
+#event-form-section {
+    background: #fff;
+    padding: 20px 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    max-width: 350px;
+    margin: 20px auto;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#event-form-section.hidden {
+    display: none;
+}
+
+#event-form-title {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Form Styles */
+#event-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#event-form label {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 2px;
+}
+
+#event-form input,
+#event-form textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.15s ease;
+}
+
+#event-form input:focus,
+#event-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Buttons */
+#event-form button {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+#event-form button[type="submit"] {
+    background: #007bff;
+    color: white;
+}
+
+#event-form button[type="submit"]:hover {
+    background: #005fcc;
+}
+
+#event-cancel-btn {
+    background: #eee;
+    color: #333;
+}
+
+#event-cancel-btn:hover {
+    background: #ddd;
+}
+
+/* Slight press animation */
+#event-form button:active {
+    transform: scale(0.97);
+}
+

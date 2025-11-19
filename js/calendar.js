@@ -1,9 +1,17 @@
-let currentDate = new Date();  
+import {load, save} from "./storage.js"
+
+let currentDate = new Date(); 
+const events = load("events", []) 
+let selectedDate = null;
 
 export function init() {
     console.log("Calendar Module Loaded");
 
     renderCalendar();
+
+    document.getElementById("event-cancel-btn").addEventListener("click", () => {
+        closeEventForm();
+    });
 
     document.getElementById("prev-month").addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
@@ -14,6 +22,25 @@ export function init() {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar();
     });
+
+    document.getElementById('event-form').addEventListener("submit", (e) => {
+        e.preventDefault()
+
+        const name = document.getElementById('event-name').value.trim()
+        if (!name) return
+
+        const eventObj = {
+            name,
+            date: selectedDate,
+            start: document.getElementById('event-start').value || null,
+            end: document.getElementById('event-end').value || null,
+            desc: document.getElementById('event-desc').value || null
+        }
+
+        events.push(eventObj)
+        save('events', events)
+        closeEventForm()
+    } )
 }
 
 function renderCalendar(){
@@ -55,6 +82,15 @@ function renderCalendar(){
         cell.className = 'day'
         cell.textContent = day
 
+         // Create the date object for this cell
+        const dateObj = new Date(year, month, day);
+
+        // Convert to YYYY-MM-DD (local)
+        const dateString = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+
+
+        cell.addEventListener("click", () => openEventForm(dateString));
+
         const isToday = day === today.getDate() &&
             month === today.getMonth() &&
             year === today.getFullYear();
@@ -63,5 +99,22 @@ function renderCalendar(){
         
         grid.appendChild(cell)
     }
+}
 
+function onDayClick(){
+    console.log("Clicked day:", year, month + 1, day);
+}
+
+function openEventForm(date) {
+    selectedDate = date;  
+    document.getElementById("event-form-section").classList.remove("hidden");
+
+    document.getElementById("event-form-title").textContent =
+        `Add Event — ${selectedDate}`;
+}
+
+function closeEventForm(){
+    document.getElementById("event-form-section").classList.add('hidden')
+    document.getElementById("event-form").reset();
+    selectedDate = null;
 }

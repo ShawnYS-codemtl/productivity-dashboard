@@ -28,3 +28,7 @@ h2 {
 .dragging {
     opacity: 0.5;
 }
+
+.hidden {
+    display: none;
+}
