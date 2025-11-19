@@ -229,9 +229,9 @@ li {
     gap: 0.75rem;
 }
 
-.habit-item.completed .habit-name {
-    text-decoration: line-through;
-    opacity: 0.6;
+.habit-item.completedToday {
+    background-color: #70c570;
+    color: white;
 }
 
 .delete-habit-btn {

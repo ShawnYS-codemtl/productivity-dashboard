@@ -25,7 +25,11 @@ function addHabit(){
     if (!name) return 
     habits.push({
         name: name,
-        completedToday: false
+        completedToday: false,
+        currentStreak: 0,
+        bestStreak: 0,
+        lastCompletedDate: null,
+        history: []
     })
 
     input.value = ''
@@ -34,7 +38,29 @@ function addHabit(){
 }
 
 function toggleHabit(index) {
-    habits[index].completedToday = !habits[index].completedToday
+    const habit = habits[index]
+    habit.completedToday = !habit.completedToday
+
+    if (habit.completedToday) {
+        const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+        if (habit.lastCompletedDate === today) {
+            // already completed today -- do nothing
+        } else if (habit.lastCompletedDate === yesterday) {
+            // continue streak
+            habit.currentStreak++;
+        } else {
+            // streak broken
+            habit.currentStreak = 1;
+        }
+
+        habit.lastCompletedDate = today;
+
+        if (habit.currentStreak > habit.bestStreak) {
+            habit.bestStreak = habit.currentStreak;
+        }
+    }
     save("habits", habits)
     render()
 }
@@ -51,7 +77,7 @@ function render(){
     habits.forEach((habit, i) => {
         const li = document.createElement('li')
         li.classList.add('habit-item')
-        if (habit.completedToday) li.classList.add('completed')
+        if (habit.completedToday) li.classList.add('completedToday')
 
         const leftDiv = document.createElement('div')
         leftDiv.classList.add('habit-left')
@@ -65,7 +91,11 @@ function render(){
         nameSpan.classList.add('habit-name')
         nameSpan.textContent = habit.name
 
-        leftDiv.append(check, nameSpan)
+        const streakSpan = document.createElement('span');
+        streakSpan.classList.add('habit-streak');
+        streakSpan.textContent = `🔥 ${habit.currentStreak} • ⭐ ${habit.bestStreak}`;
+
+        leftDiv.append(check, nameSpan, streakSpan)
 
         const delBtn = document.createElement("button");
         delBtn.className = "delete-habit-btn";
@@ -103,6 +133,16 @@ function dailyResetCheck() {
             habit.lastUpdated = Date.now();
             changed = true;
         }
+
+        // const today = new Date().toDateString();
+        const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+        if (habit.lastCompletedDate !== yesterday) {
+            // streak is broken
+            habit.currentStreak = 0;
+        }
+
+    habit.completedToday = false;
     })
     if (changed) {
         save('habits', habits)
