@@ -99,7 +99,7 @@ function render() {
             input.type = "text"
             input.value = todo.text
             input.maxLength = 30
-            li.replaceChild(input, text)
+            text.replaceWith(input)
             input.focus()
             input.select()
 
