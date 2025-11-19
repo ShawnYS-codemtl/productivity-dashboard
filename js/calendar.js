@@ -1,3 +1,4 @@
+// import { UUID } from "uuidjs";
 import {load, save} from "./storage.js"
 
 let currentDate = new Date(); 
@@ -5,7 +6,7 @@ const events = load("events", [])
 let selectedDate = null;
 
 export function init() {
-    console.log("Calendar Module Loaded");
+    console.log("Calendar Module Loaded"); 
 
     renderCalendar();
 
@@ -30,6 +31,7 @@ export function init() {
         if (!name) return
 
         const eventObj = {
+            id: "unique-id",
             name,
             date: selectedDate,
             start: document.getElementById('event-start').value || null,
@@ -39,6 +41,7 @@ export function init() {
 
         events.push(eventObj)
         save('events', events)
+        renderEventList()
         closeEventForm()
     } )
 }
@@ -117,4 +120,57 @@ function closeEventForm(){
     document.getElementById("event-form-section").classList.add('hidden')
     document.getElementById("event-form").reset();
     selectedDate = null;
+}
+
+function renderEventList() {
+    const listSection = document.getElementById("event-list-section");
+    const listEl = document.getElementById("event-list");
+
+    if (events.length === 0) {
+        listSection.classList.add("hidden");
+        return;
+    }
+
+    // Show list view
+    listSection.classList.remove("hidden");
+
+    // Sort events chronologically
+    const sorted = [...events].sort((a, b) => {
+        return new Date(a.date + " " + (a.start || "00:00")) -
+               new Date(b.date + " " + (b.start || "00:00"));
+    });
+
+    listEl.innerHTML = "";
+
+    sorted.forEach(evt => {
+        const item = document.createElement("div");
+        item.className = "event-list-item";
+
+        const date = new Date(evt.date);
+        const formattedDate = date.toLocaleDateString(undefined, {
+            weekday: "short",
+            month: "short",
+            day: "numeric"
+        });
+
+        const timeRange =
+            evt.start && evt.end
+                ? `${evt.start} – ${evt.end}`
+                : evt.start
+                ? evt.start
+                : "All day";
+
+        item.innerHTML = `
+            <div class="event-list-date">${formattedDate}</div>
+            <div class="event-list-info">
+                <div class="event-list-name">${evt.name}</div>
+                <div class="event-list-time">${timeRange}</div>
+            </div>
+        `;
+
+        // Click to open details
+        item.addEventListener("click", () => openEventDetails(evt));
+
+        listEl.appendChild(item);
+    });
 }
