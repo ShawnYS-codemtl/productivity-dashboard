@@ -51,3 +51,19 @@ Tech focus: HTML/CSS/JS DOM manipulation LocalStorage Modular JS (ES modules)
 - Learned to handle DOM manipulation, events, and accessibility with aria-live and focus handling.
 
 - Practiced state management for timer variables (duration, timeLeft, intervalId) and UI synchronization.
+
+## Habit Tracker Module
+
+### A recurring habit tracker that helps users build consistency by tracking daily completion and streaks. Features include automatic daily resets, progress visualization, editable habits, and persistent storage, providing a more advanced state management experience than a standard to-do list.
+
+- Implemented daily completion tracking for recurring habits.
+
+- Learned to manage streaks and visual indicators for user progress over time.
+
+- Built a daily reset system that updates habit states while preserving streaks.
+
+- Practiced handling more complex item state (name + completedToday + streak/history).
+
+- Gained experience with dynamic UI updates for recurring tasks, separate from one-off tasks.
+
+- Reinforced data persistence strategies for recurring data, including selectively resetting parts of stored objects.
