@@ -124,30 +124,51 @@
                 <div id="calendar-grid" class="calendar-grid"></div>
             </div>
         </section>
-        <section id="event-list-section" class="hidden card">
+        
+        <section id="event-list-section" class="modal card">
             <h3>Upcoming Events</h3>
             <div id="event-list"></div>
         </section>
+
         <section id="event-form-section" class="hidden card">
-            <h3 id="event-form-title">Add Event</h3>
+            <div class="modal-content">
+                <h3 id="event-form-title"></h3>
 
-            <form id="event-form">
-                <label for="event-name"> Event name * </label>
-                <input type="text" id="event-name" required>
+                <form id="event-form">
+                    <label for="event-name"> Event name * </label>
+                    <input type="text" id="event-name" required>
 
-                <label for="event-start">Start time</label>
-                <input type="time" id="event-start">
+                    <label for="event-date">Date *</label>
+                    <input type="date" id="event-date" required>
 
-                <label for="event-end">End time </label>
-                <input type="time" id="event-end">
+                    <label for="event-start">Start time</label>
+                    <input type="time" id="event-start">
 
-                <label for="event-desc">Description</label>
-                <textarea name="" id="event-desc" rows="4" cols="35"></textarea>
+                    <label for="event-end">End time </label>
+                    <input type="time" id="event-end">
 
-                <button type="submit">Save Event</button>
-                <button type="button" id="event-cancel-btn">Cancel</button>
-            </form>
+                    <label for="event-desc">Description</label>
+                    <textarea name="" id="event-desc" rows="4" cols="35"></textarea>
+
+                    <button type="submit">Save Event</button>
+                    <button type="button" id="event-cancel-btn">Cancel</button>
+                </form>
+            </div>
         </section>
+
+         <!-- Event Details Modal -->
+        <div id="event-details-modal" class="modal hidden">
+            <div class="modal-content">
+            <button class="close-btn" id="details-close">×</button>
+            <h3 id="detail-name"></h3>
+            <p id="detail-date-time" class="muted"></p>
+            <p id="detail-desc"></p>
+            <div class="modal-actions">
+                <button id="edit-event-btn">Edit</button>
+                <button id="delete-event-btn">Delete</button>
+            </div>
+            </div>
+        </div>
     </main>
 
     <script type="module" src="./js/main.js"></script>

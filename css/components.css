@@ -1,3 +1,6 @@
+* {
+    box-sizing: border-box;
+}
 .card {
     background: white;
     padding: 1.5rem;
@@ -246,7 +249,8 @@ li {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 6px;
-    margin-top: 1rem;
+    margin: 1rem auto 0 auto;
+    padding-right: 1em;
 }
 
 #calendar-header {
@@ -266,12 +270,26 @@ li {
     text-align: center;
     background: #f7f7f7;
     border-radius: 6px;
+    cursor: pointer;
+    display:flex;
+    flex-direction:column;
+    justify-content: flex-start;
+    /* min-height: 64px;
+    border:1px solid transparent; */
 }
+
+#calendar-grid .day:hover{ 
+    border-color:#e6e9f2;
+    background-color: #ddd;
+    /* background-color: red; */
+ }
 
 #calendar-grid .day.today {
     background: #6ab7ff;
     color: white;
     font-weight: bold;
+    /* outline: 2px solid rgba(79,70,229,0.12);
+    box-shadow: inset 0 0 0 1px rgba(79,70,229,0.04) */
 }
 
 /* Event Form Section */
@@ -326,7 +344,7 @@ li {
     outline: none;
 }
 
-/* Buttons */
+/* /* Buttons */
 #event-form button {
     padding: 10px;
     border-radius: 6px;
@@ -364,6 +382,21 @@ li {
     margin-top: 1rem;
 } */
 
+/* Events list */
+#event-list{ display:flex; flex-direction:column; gap:0.3rem; margin-top: 1em; }
+.event-item{
+  padding:0.6rem;
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:0.5rem;
+  border:1px solid #eee;
+}
+.event-left{display:flex;flex-direction:column}
+.event-date{font-weight:600}
+.muted{ color:var(--muted) }
+
 .event-list-item {
     background: white;
     padding: 12px 16px;
@@ -395,4 +428,34 @@ li {
 .event-list-time {
     font-size: 0.9rem;
     color: #555;
+} */
+
+/* Modal base */
+.modal{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(10,12,20,0.35);
+  z-index:50;
 }
+.modal.hidden{ display:none }
+.modal .modal-content{
+  background:var(--card-bg);
+  padding:1rem;
+  border-radius:12px;
+  width: min(520px, 96%);
+  box-shadow: 0 10px 40px rgba(12,20,40,0.12);
+  position:relative;
+}
+.close-btn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  border:none;
+  background:transparent;
+  font-size:1.2rem;
+  cursor:pointer;
+}
+

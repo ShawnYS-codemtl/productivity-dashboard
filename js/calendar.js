@@ -2,54 +2,99 @@
 import {load, save} from "./storage.js"
 
 let currentDate = new Date(); 
-const events = load("events", []) 
-let selectedDate = null;
+let events = load("events", []) 
+let editingEvent = null  // null means adding a new event
+
+// DOM
+const grid = document.getElementById("calendar-grid");
+const prevBtn = document.getElementById("prev-month");
+const nextBtn = document.getElementById("next-month");
+const title = document.getElementById('calendar-title')
+
+// Form & modal DOM
+const eventFormSection = document.getElementById("event-form-section");
+const eventForm = document.getElementById("event-form");
+const eventDateInput = document.getElementById("event-date");
+const eventNameInput = document.getElementById("event-name");
+const eventStartInput = document.getElementById("event-start");
+const eventEndInput = document.getElementById("event-end");
+const eventDescInput = document.getElementById("event-desc");
+const eventCancelBtn = document.getElementById("event-cancel-btn");
+// const eventCancelBtn2 = document.getElementById("event-cancel-2");
+
+// Details modal
+const detailsModal = document.getElementById("event-details-modal");
+const detailName = document.getElementById("detail-name");
+const detailDateTime = document.getElementById("detail-date-time");
+const detailDesc = document.getElementById("detail-desc");
+const detailsClose = document.getElementById("details-close");
+const editEventBtn = document.getElementById("edit-event-btn");
+const deleteEventBtn = document.getElementById("delete-event-btn");
 
 export function init() {
     console.log("Calendar Module Loaded"); 
+    // localStorage.clear()
 
     renderCalendar();
+    renderEventList()
 
-    document.getElementById("event-cancel-btn").addEventListener("click", () => {
-        closeEventForm();
-    });
-
-    document.getElementById("prev-month").addEventListener("click", () => {
+    prevBtn.addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar();
     });
 
-    document.getElementById("next-month").addEventListener("click", () => {
+    nextBtn.addEventListener("click", () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar();
     });
 
-    document.getElementById('event-form').addEventListener("submit", (e) => {
+   eventForm.addEventListener("submit", (e) => {
         e.preventDefault()
-
-        const name = document.getElementById('event-name').value.trim()
+        const name = eventNameInput.value.trim()
         if (!name) return
 
-        const eventObj = {
-            id: "unique-id",
-            name,
-            date: selectedDate,
-            start: document.getElementById('event-start').value || null,
-            end: document.getElementById('event-end').value || null,
-            desc: document.getElementById('event-desc').value || null
+        let eventObj
+        if (editingEvent) {
+            // Edit mode: preserve original ID
+            eventObj = {
+                ...editingEvent,
+                name,
+                date: eventDateInput.value,
+                start: eventStartInput.value || null,
+                end: eventEndInput.value || null,
+                desc: eventDescInput.value || null
+            };
+            const idx = events.findIndex(ev => ev.id === editingEvent.id);
+            events[idx] = eventObj;
+        } else {
+            // Add mode: generate new ID
+            eventObj = {
+                id: cryptoRandomId(),
+                name,
+                date: eventDateInput.value,
+                start: eventStartInput.value || null,
+                end: eventEndInput.value || null,
+                desc: eventDescInput.value || null
+            };
+            events.push(eventObj);
         }
 
-        events.push(eventObj)
         save('events', events)
+        closeEventForm();
+        renderCalendar()
         renderEventList()
-        closeEventForm()
+        
     } )
+
+    eventCancelBtn.addEventListener("click", () => {
+        closeEventForm();
+    });
+
+    editEventBtn.addEventListener("click", onEditFromDetails);
+    deleteEventBtn.addEventListener("click", onDeleteFromDetails);
 }
 
 function renderCalendar(){
-    const grid = document.getElementById('calendar-grid')
-    const title = document.getElementById('calendar-title')
-
     grid.innerHTML = ''
 
     const year = currentDate.getFullYear()
@@ -86,11 +131,7 @@ function renderCalendar(){
         cell.textContent = day
 
          // Create the date object for this cell
-        const dateObj = new Date(year, month, day);
-
-        // Convert to YYYY-MM-DD (local)
-        const dateString = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-
+        const dateString = formatDateForInput(year, month, day);
 
         cell.addEventListener("click", () => openEventForm(dateString));
 
@@ -104,22 +145,32 @@ function renderCalendar(){
     }
 }
 
-function onDayClick(){
-    console.log("Clicked day:", year, month + 1, day);
-}
+function openEventForm(dateString, editEvent = null) {
+    eventFormSection.classList.remove("hidden");
+    eventDateInput.value = dateString
 
-function openEventForm(date) {
-    selectedDate = date;  
-    document.getElementById("event-form-section").classList.remove("hidden");
-
-    document.getElementById("event-form-title").textContent =
-        `Add Event — ${selectedDate}`;
+  if (editEvent){
+    editingEvent = editEvent
+    eventNameInput.value = editEvent.name;
+    eventStartInput.value = editEvent.start || "";
+    eventEndInput.value = editEvent.end || "";
+    eventDescInput.value = editEvent.desc || "";
+    document.getElementById("event-form-title").textContent = `Edit Event - ${eventDateInput.value}`;
+  } else {
+    editingEvent = null
+    eventNameInput.value = "";
+    eventStartInput.value = "";
+    eventEndInput.value = "";
+    eventDescInput.value = "";
+    document.getElementById("event-form-title").textContent = `Add Event - ${eventDateInput.value}`;
+  }
+  // focus name
+  setTimeout(()=> eventNameInput.focus(), 0);
 }
 
 function closeEventForm(){
     document.getElementById("event-form-section").classList.add('hidden')
-    document.getElementById("event-form").reset();
-    selectedDate = null;
+    // document.getElementById("event-form").reset();
 }
 
 function renderEventList() {
@@ -136,8 +187,7 @@ function renderEventList() {
 
     // Sort events chronologically
     const sorted = [...events].sort((a, b) => {
-        return new Date(a.date + " " + (a.start || "00:00")) -
-               new Date(b.date + " " + (b.start || "00:00"));
+        return a.date.localeCompare(b.date); 
     });
 
     listEl.innerHTML = "";
@@ -146,7 +196,7 @@ function renderEventList() {
         const item = document.createElement("div");
         item.className = "event-list-item";
 
-        const date = new Date(evt.date);
+        const date = parseLocalDate(evt.date);
         const formattedDate = date.toLocaleDateString(undefined, {
             weekday: "short",
             month: "short",
@@ -169,8 +219,70 @@ function renderEventList() {
         `;
 
         // Click to open details
-        item.addEventListener("click", () => openEventDetails(evt));
+        item.addEventListener("click", () => openEventDetails(evt.id));
 
         listEl.appendChild(item);
     });
 }
+
+// ---------- Details modal ----------
+function openEventDetails(id){
+  console.log("event details open")
+  console.log(events)
+  const ev = events.find(x => x.id === id);
+  if (!ev) return;
+  detailName.textContent = ev.name;
+  detailDateTime.textContent = formatHuman(ev.date, ev.start, ev.end);
+  detailDesc.textContent = ev.desc || "No description.";
+  detailsModal.classList.remove("hidden");
+
+  // attach id to buttons for actions
+  editEventBtn.dataset.id = id;
+  deleteEventBtn.dataset.id = id;
+}
+
+function onEditFromDetails(){
+  const id = editEventBtn.dataset.id;
+  const ev = events.find(x => x.id === id);
+  if (!ev) return;
+  detailsModal.classList.add("hidden");
+  openEventForm(ev.date, ev);
+}
+
+function onDeleteFromDetails(){
+  const id = deleteEventBtn.dataset.id;
+  if (!confirm("Delete this event?")) return;
+  events = events.filter(x => x.id !== id);
+  save("events", events);
+  detailsModal.classList.add("hidden");
+  renderCalendar();
+  renderEventList();
+}
+
+function formatHuman(dateISO, start, end){
+  const d = new Date(dateISO);
+  const opts = { month: "short", day: "numeric" };
+  const dateStr = d.toLocaleDateString(undefined, opts);
+  if (start || end){
+    const s = start ? start : "";
+    const e = end ? ` - ${end}` : "";
+    return `${dateStr} ${s}${e}`;
+  }
+  return dateStr;
+}
+
+function formatDateForInput(year, month, day) {
+    return `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
+
+function cryptoRandomId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+}
+
+function parseLocalDate(dateString) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day); // month is 0-indexed
+}
+
+
+
