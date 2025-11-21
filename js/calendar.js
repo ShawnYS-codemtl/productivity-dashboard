@@ -5,6 +5,7 @@ import { makeDraggable } from "./utils.js";
 let currentDate = new Date(); 
 let events = load("events", []) 
 let editingEvent = null  // null means adding a new event
+let currentPopup = null;
 
 // DOM
 const grid = document.getElementById("calendar-grid");
@@ -137,7 +138,22 @@ function renderCalendar(){
          // Create the date object for this cell
         const dateString = formatDateForInput(year, month, day);
 
-        cell.addEventListener("click", () => openEventForm(dateString));
+        cell.addEventListener("click", () => {
+            const dayEvents = getEventsByDate(dateString);
+
+            openEventForm(dateString)
+            if (dayEvents.length > 0) {
+                console.log("show events popup")
+                showEventsPopup(dayEvents, cell)
+            }
+        })
+
+        const hasEvent = events.some(evt => evt.date === dateString);
+        if (hasEvent) {
+            const dot = document.createElement("div");
+            dot.classList.add("event-dot");
+            cell.appendChild(dot);
+        }
 
         const isToday = day === today.getDate() &&
             month === today.getMonth() &&
@@ -251,8 +267,6 @@ function renderEventList() {
 
 // ---------- Details modal ----------
 function openEventDetails(id){
-  console.log("event details open")
-  console.log(events)
   const ev = events.find(x => x.id === id);
   if (!ev) return;
   detailName.textContent = ev.name;
@@ -328,12 +342,54 @@ function getUpcomingEvents() {
     today.setHours(0,0,0,0); // normalize to midnight
 
     return events.filter(evt => {
-        const eventDate = new Date(evt.date);
+        const eventDate = parseLocalDate(evt.date);
         eventDate.setHours(0,0,0,0); // normalize event date
         return eventDate >= today;
     });
 }
 
+function getEventsByDate(dateString) {
+    return events.filter(evt => evt.date === dateString);
+}
+
 function closeEventDetails(){
     detailsModal.classList.add('hidden')
 }
+
+function showEventsPopup(eventsArr, cell) {
+    // Remove previous popup if exists
+    if (currentPopup) currentPopup.remove();
+
+    const popup = document.createElement("div");
+    popup.className = "day-events-popup";
+
+    eventsArr.forEach(evt => {
+        const eventItem = document.createElement("div");
+        eventItem.className = "event-item";
+
+        const nameDiv = document.createElement("div");
+        nameDiv.textContent = evt.name;
+
+        const detailsBtn = document.createElement("button");
+        detailsBtn.className = "details-btn";
+        detailsBtn.textContent = "Details";
+        detailsBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // prevent cell click from firing
+            openEventDetails(evt.id);
+            popup.remove(); // close mini popup
+        });
+
+        eventItem.append(nameDiv, detailsBtn);
+        popup.appendChild(eventItem);
+    });
+
+    document.body.appendChild(popup);
+
+    // Position above the cell
+    const rect = cell.getBoundingClientRect();
+    popup.style.left = `${rect.left + window.scrollX}px`;
+    popup.style.top = `${rect.top + window.scrollY - popup.offsetHeight - 6}px`;
+
+    currentPopup = popup;
+}
+
