@@ -13,11 +13,11 @@ export function init() {
 
     dailyResetCheck()
 
-
     form.addEventListener("submit", (e) => {
         e.preventDefault()
         addHabit()
     });
+    render()
 }
 
 function addHabit(){
