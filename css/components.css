@@ -113,6 +113,7 @@ li {
     justify-content: space-around;
     align-items: center;
     transition: all 0.2s;
+    position: relative;
 }
 
 .completed {
@@ -178,12 +179,14 @@ li {
 
 /* Delete button */
 #todo-list li button.delete-btn {
-    margin-left: 0.5rem;
-    background: #c70000;
-    border: none;
-    cursor: pointer;
-    color: white;
-    flex-shrink: 0;
+    position:absolute;
+    right: 0px;
+    top:-5px;
+    border:none;
+    background:transparent;
+    font-size:1.2rem;
+    cursor:pointer;
+    color: red;
 }
 
 /* Completed todos */
@@ -238,11 +241,14 @@ li {
 }
 
 .delete-habit-btn {
-    background: transparent;
-    border: none;
-    color: #bf1e1e;
-    font-size: 1.1rem;
-    cursor: pointer;
+    position:absolute;
+    right: 0px;
+    top:0px;
+    border:none;
+    background:transparent;
+    font-size:1.2rem;
+    cursor:pointer;
+    color: red;
 }
 
 #calendar-section {
@@ -288,6 +294,13 @@ li {
     background-color: #ddd;
     /* background-color: red; */
  }
+
+#calendar-grid .day:active{ 
+    background-color: #ffecec;  /* soft red highlight */
+    color: #ff2a2a;             /* strong accent for text */
+    font-weight: 600;
+    border-radius: 6px;
+}
 
 #calendar-grid .day.today {
     background: #6ab7ff;
@@ -451,35 +464,17 @@ body.modal-open {
 .event-list-time {
     font-size: 0.9rem;
     color: #555;
-} */
+} 
 
-/* Modal base */
-.modal{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(10,12,20,0.35);
-  z-index:50;
-}
-
-.modal .modal-content{
-  background:var(--card-bg);
-  padding:1rem;
-  border-radius:12px;
-  width: min(520px, 96%);
-  box-shadow: 0 10px 40px rgba(12,20,40,0.12);
-  position:relative;
-}
 .close-btn{
   position:absolute;
-  right:8px;
-  top:8px;
+  right:-12px;
+  top:-14px;
   border:none;
   background:transparent;
   font-size:1.2rem;
   cursor:pointer;
+  color: red;
 }
 
 /* Dark background overlay */
@@ -501,3 +496,52 @@ body.modal-open {
     overflow: hidden;
 }
 
+/* Header */
+.details-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.details-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.close-btn:hover {
+    background: #f3f4f6;
+    border-radius: 6px;
+}
+
+/* Body layout */
+.details-body {
+    padding: 16px 20px;
+}
+
+.details-row {
+    margin-bottom: 14px;
+}
+
+.label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.value {
+    font-size: 1rem;
+    color: #1f2937;
+}
+
+.description {
+    white-space: pre-wrap;
+    line-height: 1.45;
+}

@@ -118,7 +118,7 @@ function render() {
 
         // Delete button
         const delBtn = document.createElement("button")
-        delBtn.textContent = "X"
+        delBtn.textContent = "×"
         delBtn.classList.add("delete-btn")
         delBtn.addEventListener("click", () => {
             todos.splice(index, 1)

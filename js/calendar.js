@@ -23,12 +23,12 @@ const eventStartInput = document.getElementById("event-start");
 const eventEndInput = document.getElementById("event-end");
 const eventDescInput = document.getElementById("event-desc");
 const eventCancelBtn = document.getElementById("event-cancel-btn");
-// const eventCancelBtn2 = document.getElementById("event-cancel-2");
 
 // Details modal
 const detailsModal = document.getElementById("event-details-modal");
 const detailName = document.getElementById("detail-name");
-const detailDateTime = document.getElementById("detail-date-time");
+const detailDate = document.getElementById("detail-date");
+const detailTime = document.getElementById('detail-time')
 const detailDesc = document.getElementById("detail-desc");
 const detailsClose = document.getElementById("details-close");
 const editEventBtn = document.getElementById("edit-event-btn");
@@ -95,6 +95,7 @@ export function init() {
 
     editEventBtn.addEventListener("click", onEditFromDetails);
     deleteEventBtn.addEventListener("click", onDeleteFromDetails);
+    detailsClose.addEventListener("click", closeEventDetails)
 }
 
 function renderCalendar(){
@@ -255,7 +256,22 @@ function openEventDetails(id){
   const ev = events.find(x => x.id === id);
   if (!ev) return;
   detailName.textContent = ev.name;
-  detailDateTime.textContent = formatHuman(ev.date, ev.start, ev.end);
+  const date = parseLocalDate(ev.date);
+  const formattedDate = (date).toLocaleDateString(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "numeric"
+    });
+
+  const timeRange = ev.start && ev.end
+        ? `${ev.start} – ${ev.end}`
+        : ev.start
+        ? ev.start
+        : "All day";
+
+  detailDate.textContent = formattedDate
+  detailTime.textContent = timeRange
+
   detailDesc.textContent = ev.desc || "No description.";
   detailsModal.classList.remove("hidden");
 
@@ -318,3 +334,6 @@ function getUpcomingEvents() {
     });
 }
 
+function closeEventDetails(){
+    detailsModal.classList.add('hidden')
+}

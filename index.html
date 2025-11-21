@@ -152,23 +152,39 @@
             </form>
         </section>
         
-        <section id="event-list-section" class="modal card">
-            <h3>Upcoming Events</h3>
+        <section id="event-list-section" class= "card">
+            <h2>Upcoming Events</h2>
             <div id="event-list"></div>
         </section>
 
 
          <!-- Event Details Modal -->
-        <div id="event-details-modal" class="modal hidden">
-            <div class="modal-content">
-            <button class="close-btn" id="details-close">×</button>
-            <h3 id="detail-name"></h3>
-            <p id="detail-date-time" class="muted"></p>
-            <p id="detail-desc"></p>
-            <div class="modal-actions">
-                <button id="edit-event-btn">Edit</button>
-                <button id="delete-event-btn">Delete</button>
+        <div id="event-details-modal" class="card hidden">
+            <div class="details-header">
+                <h2 id="detail-name"></h2>
+                <button id="details-close" class="close-btn">×</button>
             </div>
+
+            <div class="details-body">
+                <div class="details-row">
+                    <span class="label">Date</span>
+                    <span id="detail-date" class="value"></span>
+                </div>
+
+                <div class="details-row">
+                    <span class="label">Time</span>
+                    <span id="detail-time" class="value"></span>
+                </div>
+
+                <div class="details-row">
+                    <span class="label">Description</span>
+                    <p id="detail-desc" class="value description"></p>
+                </div>
+
+                <div class="modal-actions">
+                    <button id="edit-event-btn">Edit</button>
+                    <button id="delete-event-btn">Delete</button>
+                </div>
             </div>
         </div>
     </main>
