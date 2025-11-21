@@ -1,0 +1,17 @@
+{
+  "name": "productivity-dashboard",
+  "version": "1.0.0",
+  "description": "A dashboard that includes a to-do list, pomodoro timer, habit tracker, and local-storage persistence.",
+  "main": "./js/electron.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^39.2.3"
+  },
+  "type": "module"
+}
