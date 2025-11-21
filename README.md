@@ -1,5 +1,8 @@
 # productivity-dashboard
-A dashboard that includes a to-do list, pomodoro timer, habit tracker, and local-storage persistence. 
+A dashboard that includes a to-do list, pomodoro timer, habit tracker, calendar, event scheduling and local-storage persistence.
+
+![Dashboard](./assets/productivity-dashboard.png)
+
 
 Tech focus: HTML/CSS/JS DOM manipulation LocalStorage Modular JS (ES modules)
 
