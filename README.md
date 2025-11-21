@@ -67,3 +67,28 @@ Tech focus: HTML/CSS/JS DOM manipulation LocalStorage Modular JS (ES modules)
 - Gained experience with dynamic UI updates for recurring tasks, separate from one-off tasks.
 
 - Reinforced data persistence strategies for recurring data, including selectively resetting parts of stored objects.
+
+## Calendar / Event Scheduler Module
+### A dynamic monthly calendar that displays events, allows adding, editing, and deleting events, and provides an interactive mini-popup view for daily events.
+
+- DOM Manipulation & Dynamic Rendering – created calendar grid, weekday headers, and dynamically positioned elements for event dots and popups.
+
+- Event Handling – managed multiple click events on calendar cells, buttons, and popups, including stopping propagation for nested elements.
+
+- Date Handling & Filtering – parsed and normalized dates to handle timezones correctly, filtered events for “upcoming only,” and sorted events chronologically.
+
+- Form Management – implemented add/edit forms with prefilled data, reset functionality, and inline validation.
+
+- Mini Popup UI – designed a dynamic, position-aware popup that lists daily events and links to event details.
+
+- Draggable UI Elements – implemented draggable event form to improve usability on smaller screens.
+
+- Visual Cues & Indicators – added event dots on calendar days, highlighted the current day, and used active states for selected dates.
+
+- LocalStorage Persistence – stored events and reflected changes in the UI consistently.
+
+## Additional Insights:
+
+- Learned to handle conflicts between absolute positioning, transforms, and draggable elements.
+
+- Improved user experience with responsive popups and subtle visual indicators.
