@@ -95,3 +95,19 @@ Tech focus: HTML/CSS/JS DOM manipulation LocalStorage Modular JS (ES modules)
 - Learned to handle conflicts between absolute positioning, transforms, and draggable elements.
 
 - Improved user experience with responsive popups and subtle visual indicators.
+
+## Setup & Run as Desktop App (Electron)
+1. Install Node.js
+2. Clone the repository
+
+     - git clone https://github.com/ShawnYS-codemtl/productivity-dashboard.git
+
+     - cd your-dashboard-repo
+
+3. Install dependencies
+
+   - npm install
+
+4. Run the app
+
+   - npm start
