@@ -158,30 +158,31 @@ function openEventForm(dateString, editEvent = null) {
     eventFormSection.style.transform = "translate(-50%, -50%)";
 
     document.body.classList.add("modal-open");
-    makeDraggable(eventFormSection)
 
     modalOverlay.classList.remove('hidden')
     eventFormSection.classList.remove("hidden");
+    
+    makeDraggable(eventFormSection, eventFormHeader)
    
     eventDateInput.value = dateString
 
-  if (editEvent){
-    editingEvent = editEvent
-    eventNameInput.value = editEvent.name;
-    eventStartInput.value = editEvent.start || "";
-    eventEndInput.value = editEvent.end || "";
-    eventDescInput.value = editEvent.desc || "";
-    document.getElementById("event-form-title").textContent = `Edit Event - ${eventDateInput.value}`;
-  } else {
-    editingEvent = null
-    eventNameInput.value = "";
-    eventStartInput.value = "";
-    eventEndInput.value = "";
-    eventDescInput.value = "";
-    document.getElementById("event-form-title").textContent = `Add Event - ${eventDateInput.value}`;
-  }
-  // focus name
-  setTimeout(()=> eventNameInput.focus(), 0);
+    if (editEvent){
+        editingEvent = editEvent
+        eventNameInput.value = editEvent.name;
+        eventStartInput.value = editEvent.start || "";
+        eventEndInput.value = editEvent.end || "";
+        eventDescInput.value = editEvent.desc || "";
+        document.getElementById("event-form-title").textContent = `Edit Event - ${eventDateInput.value}`;
+    } else {
+        editingEvent = null
+        eventNameInput.value = "";
+        eventStartInput.value = "";
+        eventEndInput.value = "";
+        eventDescInput.value = "";
+        document.getElementById("event-form-title").textContent = `Add Event - ${eventDateInput.value}`;
+    }
+    // focus name
+    setTimeout(()=> eventNameInput.focus(), 0);
 }
 
 function closeEventForm(){
@@ -197,7 +198,9 @@ function renderEventList() {
     const listSection = document.getElementById("event-list-section");
     const listEl = document.getElementById("event-list");
 
-    if (events.length === 0) {
+    const upcomingEvents = getUpcomingEvents();
+
+    if (upcomingEvents.length === 0) {
         listSection.classList.add("hidden");
         return;
     }
@@ -206,7 +209,7 @@ function renderEventList() {
     listSection.classList.remove("hidden");
 
     // Sort events chronologically
-    const sorted = [...events].sort((a, b) => {
+    const sorted = [...upcomingEvents].sort((a, b) => {
         return a.date.localeCompare(b.date); 
     });
 
@@ -304,5 +307,14 @@ function parseLocalDate(dateString) {
     return new Date(year, month - 1, day); // month is 0-indexed
 }
 
+function getUpcomingEvents() {
+    const today = new Date();
+    today.setHours(0,0,0,0); // normalize to midnight
 
+    return events.filter(evt => {
+        const eventDate = new Date(evt.date);
+        eventDate.setHours(0,0,0,0); // normalize event date
+        return eventDate >= today;
+    });
+}
 

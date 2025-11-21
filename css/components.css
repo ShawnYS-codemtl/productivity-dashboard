@@ -309,7 +309,6 @@ li {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     max-width: 350px;
     display: none;
-    transition: opacity 0.2s ease, transform 0.2s ease;
     z-index: 20;
     pointer-events: auto;
     max-width: 90vw;
