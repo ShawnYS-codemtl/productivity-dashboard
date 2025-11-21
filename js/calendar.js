@@ -1,5 +1,6 @@
 // import { UUID } from "uuidjs";
 import {load, save} from "./storage.js"
+import { makeDraggable } from "./utils.js";
 
 let currentDate = new Date(); 
 let events = load("events", []) 
@@ -10,10 +11,12 @@ const grid = document.getElementById("calendar-grid");
 const prevBtn = document.getElementById("prev-month");
 const nextBtn = document.getElementById("next-month");
 const title = document.getElementById('calendar-title')
+const modalOverlay = document.getElementById('modal-overlay')
 
 // Form & modal DOM
 const eventFormSection = document.getElementById("event-form-section");
 const eventForm = document.getElementById("event-form");
+const eventFormHeader = document.getElementById('event-form-header')
 const eventDateInput = document.getElementById("event-date");
 const eventNameInput = document.getElementById("event-name");
 const eventStartInput = document.getElementById("event-start");
@@ -146,7 +149,20 @@ function renderCalendar(){
 }
 
 function openEventForm(dateString, editEvent = null) {
+    modalOverlay.style.display = "block";
+    eventFormSection.style.display = "block";
+
+    // reset position + center again
+    eventFormSection.style.top = "50%";
+    eventFormSection.style.left = "50%";
+    eventFormSection.style.transform = "translate(-50%, -50%)";
+
+    document.body.classList.add("modal-open");
+    makeDraggable(eventFormSection)
+
+    modalOverlay.classList.remove('hidden')
     eventFormSection.classList.remove("hidden");
+   
     eventDateInput.value = dateString
 
   if (editEvent){
@@ -169,7 +185,11 @@ function openEventForm(dateString, editEvent = null) {
 }
 
 function closeEventForm(){
-    document.getElementById("event-form-section").classList.add('hidden')
+    modalOverlay.style.display = "none";
+    eventFormSection.style.display = "none";
+    document.body.classList.remove("modal-open");
+    modalOverlay.classList.add('hidden')
+    eventFormSection.classList.add('hidden')
     // document.getElementById("event-form").reset();
 }
 

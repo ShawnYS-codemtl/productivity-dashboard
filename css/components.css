@@ -245,6 +245,11 @@ li {
     cursor: pointer;
 }
 
+#calendar-section {
+    position: relative;
+    z-index: 30;
+}
+
 #calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
@@ -294,16 +299,35 @@ li {
 
 /* Event Form Section */
 #event-form-section {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #fff;
     padding: 20px 24px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     max-width: 350px;
-    margin: 20px auto;
+    display: none;
     transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 20;
+    pointer-events: auto;
+    max-width: 90vw;
 }
 
-#event-form-section.hidden {
+#event-form-header {
+    padding: 8px;
+    cursor: grab;
+    align-items: center;
+    border-radius: 6px 6px 0 0;
+}
+
+/* prevents scrolling behind modal */
+body.modal-open {
+    overflow: hidden;
+}
+
+.hidden {
     display: none;
 }
 
@@ -440,7 +464,7 @@ li {
   background:rgba(10,12,20,0.35);
   z-index:50;
 }
-.modal.hidden{ display:none }
+
 .modal .modal-content{
   background:var(--card-bg);
   padding:1rem;
@@ -457,5 +481,24 @@ li {
   background:transparent;
   font-size:1.2rem;
   cursor:pointer;
+}
+
+/* Dark background overlay */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+    display: none;          /* hidden by default */
+    z-index: 10;            /* BELOW the calendar */
+    pointer-events: none;
+}
+
+/* prevents scrolling behind modal */
+body.modal-open {
+    overflow: hidden;
 }
 
