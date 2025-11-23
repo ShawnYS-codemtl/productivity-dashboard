@@ -2,7 +2,11 @@ let intervalId = null
 let duration = 1500
 let timeLeft = duration // 25 min
 
-const alertSound = new Audio("../assets/sounds/bell-ring-390294.mp3")
+const base = window.location.pathname.startsWith("/productivity-dashboard")
+  ? "/productivity-dashboard"
+  : "";
+
+const alertSound = new Audio(`${base}/assets/sounds/bell-ring-390294.mp3`);
 
 const display = document.getElementById("timer-display")
 const startBtn = document.getElementById("start-btn")
