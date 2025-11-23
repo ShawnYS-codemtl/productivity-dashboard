@@ -2,7 +2,7 @@ let intervalId = null
 let duration = 1500
 let timeLeft = duration // 25 min
 
-const alertSound = new Audio("../assets/sounds/bell-ring-390294.mp3")
+const alertSound = new Audio(new URL("../assets/sounds/bell-ring-390294.mp3", import.meta.url))
 
 const display = document.getElementById("timer-display")
 const startBtn = document.getElementById("start-btn")
@@ -17,6 +17,7 @@ const modeBtns = document.querySelectorAll("[data-min]")
 
 export function init() {
     console.log("Pomodoro Module Loaded")
+    console.log(alertSound.src)
 
     updateDisplay()
     initProgressRing()
