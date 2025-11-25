@@ -1,6 +1,7 @@
 let intervalId = null
-let duration = 1500
-let timeLeft = duration // 25 min
+let duration = 1500      // total seconds for the selected mode
+let timeLeft = duration  // current remaining time (seconds)
+let startTimestamp = null;  // when the session actually started
 
 const base = window.location.pathname.startsWith("/productivity-dashboard")
   ? "/productivity-dashboard"
@@ -48,33 +49,48 @@ export function init() {
 function start(){
     if (intervalId) return
 
-    intervalId = setInterval(() => {
-        timeLeft -= 1
-        if (timeLeft <= 0){
-            clearInterval(intervalId)
-            intervalId = null
-            timeLeft = 0
-            alertSound.play()
-        }
-        updateProgressRing()
-        updateDisplay()
-        if (!intervalId) updateControls()
-    }, 1000)
+    startTimestamp = Date.now() - (duration - timeLeft) * 1000; 
+    intervalId = setInterval(updateTimer, 200);
 
     updateControls()
+}
+
+function updateTimer() {
+    const now = Date.now();
+    const elapsedSec = Math.floor((now - startTimestamp) / 1000);
+    timeLeft = Math.max(0, duration - elapsedSec);
+
+    updateDisplay();
+    updateProgressRing();
+
+    if (timeLeft <= 0) {
+        clearInterval(intervalId);
+        intervalId = null;
+        alertSound.play();
+        updateControls();
+    }
 }
 
 function pause(){
     clearInterval(intervalId)
     intervalId = null
+
+    // Recompute remaining time in case the tab was inactive
+    const now = Date.now();
+    const elapsedSec = Math.floor((now - startTimestamp) / 1000);
+    timeLeft = Math.max(0, duration - elapsedSec);
+
     updateProgressRing()
     updateControls()
 }
 
 function reset() {
-    timeLeft = duration
     pause()
+    timeLeft = duration;
+    startTimestamp = null;
+
     updateDisplay()
+    updateProgressRing();
     updateControls()
 }
 
@@ -103,9 +119,12 @@ function formatTime(totalSeconds) {
 }
 
 function setMode(mins) {
+    pause()
     duration = mins * 60
     timeLeft = duration
-    pause()
+
+    startTimestamp = null
+
     updateDisplay()
     updateProgressRing()
     highlightActiveButton(mins)
@@ -176,18 +195,23 @@ function editModeDurationInline(btn) {
     input.focus()
     input.select()
 
+    // Flag to track if the value was committed
+    let committed = false
+
     input.addEventListener("keypress", e => {
         if (e.key === "Enter") {
             let val = Number(input.value)
             if (!isNaN(val) && val > 0 && val <= 180) {
                 btn.dataset.min = val
+                committed = true
                 btn.textContent = oldText
                 // Update active timer if applicable
                 const activeBtn = document.querySelector(".active")
                 if (activeBtn === btn) {
+                    pause()
                     duration = val * 60
                     timeLeft = duration
-                    pause()
+                    startTimestamp = null
                     updateDisplay()
                     updateProgressRing()
                     updateControls()
@@ -197,7 +221,10 @@ function editModeDurationInline(btn) {
     })
 
     input.addEventListener("blur", () => {
-        btn.textContent = oldText
+        if (!committed) {
+            btn.textContent = oldText
+        }
+        
     })
 }
 
