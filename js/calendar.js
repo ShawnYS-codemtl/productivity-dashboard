@@ -139,14 +139,25 @@ function renderCalendar(){
         const dateString = formatDateForInput(year, month, day);
 
         cell.addEventListener("click", () => {
-            const dayEvents = getEventsByDate(dateString);
-
             openEventForm(dateString)
+        })
+
+        cell.addEventListener("mouseenter", () => {
+            const dayEvents = getEventsByDate(dateString);
             if (dayEvents.length > 0) {
-                console.log("show events popup")
+                // console.log("show events popup")
                 showEventsPopup(dayEvents, cell)
             }
         })
+
+        cell.addEventListener("mouseleave", () => {
+            // if (currentPopup) currentPopup.remove();
+            if (!currentPopup) return;
+            currentPopup.timeout = setTimeout(() => {
+                currentPopup.remove();
+                currentPopup = null;
+            }, 2500); // 2.5s grace period
+        });
 
         const hasEvent = events.some(evt => evt.date === dateString);
         if (hasEvent) {
@@ -358,7 +369,11 @@ function closeEventDetails(){
 
 function showEventsPopup(eventsArr, cell) {
     // Remove previous popup if exists
-    if (currentPopup) currentPopup.remove();
+    if (currentPopup) {
+        clearTimeout(currentPopup.timeout);
+        currentPopup.remove();
+    }
+        
 
     const popup = document.createElement("div");
     popup.className = "day-events-popup";
@@ -388,7 +403,35 @@ function showEventsPopup(eventsArr, cell) {
     // Position above the cell
     const rect = cell.getBoundingClientRect();
     popup.style.left = `${rect.left + window.scrollX}px`;
-    popup.style.top = `${rect.top + window.scrollY - popup.offsetHeight - 6}px`;
+    popup.style.top = `${rect.top + window.scrollY - popup.offsetHeight}px`
+    
+    // --- Prevent popup from going off-screen ---
+    const popupRect = popup.getBoundingClientRect();
+
+    // If popup goes off the right edge
+    if (popupRect.right > window.innerWidth) {
+        const newLeft = window.innerWidth - popupRect.width - 10;
+        popup.style.left = `${newLeft + window.scrollX}px`;
+    }
+
+    // If popup goes off the left edge
+    if (popupRect.left < 0) {
+        popup.style.left = `${10 + window.scrollX}px`;
+    }
+
+    // Allow popup to stay open when hovered
+    popup.addEventListener("mouseenter", () => {
+        if (popup.timeout) clearTimeout(popup.timeout);
+    });
+
+    popup.addEventListener("mouseleave", () => {
+        if (!currentPopup) return
+        // console.log("closing popup after hovering it")
+        currentPopup.timeout = setTimeout(() => {
+            currentPopup.remove();
+            currentPopup = null;
+        }, 2000); // 2s grace period
+    });
 
     currentPopup = popup;
 }
